@@ -1,4 +1,0 @@
-INFO     root:test_runner.py:28 1.用例ID:1 模块:登录 场景:登录成功
-INFO     root:analyse_case.py:20 1.解析请求数据，请求数据为:{'method': 'post', 'url': 'http://localhost:8000/login', 'headers': None, 'params': None, 'data': None, 'json': None, 'files': None}
-INFO     root:send_request.py:8 2.发送HTTP请求，响应文本为:{"code":500,"msg":"EOF","data":null}
-INFO     root:asserts.py:11 3.HTTP响应断言内容:实际结果(EOF) == 预期结果(操作成功)
