@@ -1,0 +1,7 @@
+requests==2.32.5
+pymysql==1.2.3
+jsonpath==0.82.2
+pytest==8.4.2
+openpyxl==3.1.5
+allure-pytest==2.16.2
+jinja==3.1.6
