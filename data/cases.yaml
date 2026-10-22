@@ -1,0 +1,133 @@
+# ============================================================
+# 接口测试用例（由 接口测试用例.xlsx 转换生成）
+# 运行流程：读取yaml文本 → Jinja2渲染 {{变量}} → yaml.safe_load解析 → 逐条执行
+# 变量说明：{{TOKEN}} / {{user_id}} 由渲染上下文（render_context）动态替换
+# 文件参数：files 中 img_file 只写文件路径，框架读取后自行 open
+# 执行开关：is_true: true 执行；false 跳过
+# ============================================================
+
+# 用例1：登录成功，提取 TOKEN 存入上下文
+- id: 1
+  feature: 登录
+  story: 登录成功
+  title: 管理员登录成功
+  method: post
+  path: /login
+  headers:
+  params:
+  data:
+  json:
+    username: "wangwu"
+    password: "123456"
+  files:
+  check: "$..msg"
+  expected: 操作成功
+  sql_check: 'select username from user where username="张三"'
+  sql_expected: 张三
+  jsonExData: {TOKEN: "$..token"}
+  sqlExData:
+  is_true: true
+
+# 用例2：未登录状态，查询列表失败（不携带token）
+- id: 2
+  feature: 用户管理
+  story: 查询失败
+  title: 为登录状态，查询列表失败
+  method: post
+  path: /api/user/getList
+  headers:
+  params:
+  data:
+  json: {page: 1, pageSize: 2}
+  files:
+  check:
+  expected: 未携带token，请先登录
+  sql_check:
+  sql_expected:
+  jsonExData:
+  sqlExData:
+  is_true: true
+
+# 用例3：登录后查询用户列表成功（自动带上 {{TOKEN}}）
+- id: 3
+  feature: 用户管理
+  story: 查询成功
+  title: 查询用户数据列表成功
+  method: post
+  path: /api/user/getList
+  headers: {Authorization: "{{TOKEN}}"}
+  params:
+  data:
+  json: {page: 1, pageSize: 2}
+  files:
+  check: "$..msg"
+  expected: 操作成功
+  sql_check:
+  sql_expected:
+  jsonExData:
+  sqlExData:
+  is_true: true
+
+# 用例4：新增用户成功，提取 user_id 存入上下文（用例5会用到）
+- id: 4
+  feature: 用户管理
+  story: 新增成功
+  title: 添加一个用户，添加成功
+  method: post
+  path: /api/user/addSave
+  headers: {Authorization: "{{TOKEN}}"}
+  params:
+  data:
+  json: {username: "你好2", password: "123456"}
+  files:
+  check: "$..msg"
+  expected: 操作成功
+  sql_check:
+  sql_expected:
+  jsonExData: {user_id: "$..data"}
+  sqlExData:
+  is_true: true
+
+# 用例5：修改刚新增的用户（依赖用例4提取的 {{user_id}}）
+- id: 5
+  feature: 用户管理
+  story: 修改成功
+  title: 修改刚增加的用户，修改成功
+  method: post
+  path: /api/user/editSave
+  headers: {Authorization: "{{TOKEN}}"}
+  params:
+  data:
+  json: '{"id": {{user_id}},"username": "你好33","password": "222222"}'
+  files:
+  check: "$..msg"
+  expected: 操作成功
+  sql_check:
+  sql_expected:
+  jsonExData:
+  sqlExData:
+  is_true: true
+
+# 用例6：新增带图片上传用户（files 走 form-data 表单）
+- id: 6
+  feature: 用户管理
+  story: 新增成功
+  title: 新增带图片上传用户，添加成功
+  method: post
+  path: /api/user/addSaveImg
+  headers:
+    Authorization: "{{TOKEN}}"
+  params:
+  data:
+    username: "python_form-data1"
+    password: "123456"
+  json:
+  files:
+    img_file: ./file/test.jpg
+  check: "$..msg"
+  expected: 操作成功
+  sql_check:
+  sql_expected:
+  jsonExData:
+  sqlExData:
+  is_true: false

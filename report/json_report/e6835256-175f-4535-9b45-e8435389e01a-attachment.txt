@@ -1,0 +1,4 @@
+INFO     root:test_runner.py:28 1.用例ID:2 模块:用户管理 场景:查询失败
+INFO     root:analyse_case.py:20 1.解析请求数据，请求数据为:{'method': 'post', 'url': 'http://localhost:8000/api/user/getList', 'headers': None, 'params': None, 'data': None, 'json': {'page': 1, 'pageSize': 2}, 'files': None}
+INFO     root:send_request.py:8 2.发送HTTP请求，响应文本为:{"code":401,"msg":"未携带token，请先登录"}
+INFO     root:asserts.py:14 3.HTTP响应断言内容:预期结果(未携带token，请先登录)in 实际结果({"code":401,"msg":"未携带token，请先登录"})

@@ -1,0 +1,6 @@
+"DESCRIPTION","DURATION IN MS","NAME","PARENT SUITE","START TIME","STATUS","STOP TIME","SUB SUITE","SUITE","TEST CLASS","TEST METHOD"
+"","8","ID:2--为登录状态，查询列表失败","testcases","2026-10-22","passed","2026-10-22","TestRunner","test_runner","",""
+"","3","ID:5--修改刚增加的用户，修改成功","testcases","2026-10-22","broken","2026-10-22","TestRunner","test_runner","",""
+"","3","ID:4--添加一个用户，添加成功","testcases","2026-10-22","failed","2026-10-22","TestRunner","test_runner","",""
+"","13","ID:1--管理员登录成功","testcases","2026-10-22","failed","2026-10-22","TestRunner","test_runner","",""
+"","4","ID:3--查询用户数据列表成功","testcases","2026-10-22","failed","2026-10-22","TestRunner","test_runner","",""
