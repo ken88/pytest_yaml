@@ -46,11 +46,11 @@
 
 ## **1. 测试套件与用例执行概览**
 
-![img_1.png](img_1.png)
+![img_1.png](img_12222.png)
 
 ## **2. 详细步骤与断言日志追踪**
 
-![img_2.png](img_2.png)
+![img_1.png](img_1.png)
 
 # **🎯 关键技术实战说明**
 
@@ -61,7 +61,7 @@
 ## **2. 测试数据与脏数据清理**
 
 框架层维护了 cleanup.yaml 文件。在 conftest.py 的 global_context Fixture 中，利用 yield 语法在测试会话开始前和结束后，自动遍历执行清理 SQL（结合 LIKE 'auto_test_%' 前缀）。无需测试人员在每条用例里手动写 DELETE，实现了对测试人员零心智负担的环境治理。
-
+![img_2.png](img_2.png)
 ## **3. 文件上传与内存泄漏防范**
 
 针对表单文件上传（multipart/form-data），框架在 analyse_case 中以 rb 模式打开文件流，并在请求发送的 finally 块中遍历关闭文件句柄，彻底杜绝了句柄泄漏，保障了自动化框架在长时间运行时的稳定性。
