@@ -4,7 +4,6 @@ import requests
 
 @allure.step("2.发起HTTP请求")
 def send_http_request(**kwargs):
-   response = None
    try:
       # 发送真实请求
       response = requests.request(**kwargs)
@@ -15,8 +14,6 @@ def send_http_request(**kwargs):
       raise e
    finally:
       # 发送完毕（无论成功失败），如果参数里有 files，立刻关闭文件！
-      #
-      #
       files = kwargs.get("files")
       if files:
          for f in files.values():

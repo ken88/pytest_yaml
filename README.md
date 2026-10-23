@@ -1,50 +1,67 @@
-# pytestDemo
+# 🚀 企业级接口自动化测试框架 (Pytest + YAML + Allure)
 
-本项目实现接口自动化的技术选型：**Python+Requests+Pytest+YAML+Allure** ，主要是针对本人的一个接口项目来开展的，通过 Python+Requests 来发送和处理HTTP协议的请求接口，使用 Pytest 作为测试执行器，使用 YAML 来管理测试数据，使用 Allure 来生成测试报告。
+## 📖 项目简介
 
+本项目是一个基于 Python 的现代化接口自动化测试框架，专为解决复杂业务流与企业级测试痛点而设计。采用 **数据驱动 (YAML)** 模式，实现了底层逻辑与测试数据的彻底解耦。具备全局鉴权注入、上下文状态流转、多层级断言、真实文件流防假校验、以及测试数据自动清理等企业级特性。
 
-## 项目说明
+## ✨ 核心特性 (Highlights)
 
-本项目在实现过程中，把整个项目拆分成请求方法封装、HTTP接口封装、关键字封装、测试用例等模块。
+*   **多模块数据驱动**：按业务拆分 YAML 文件，支持动态加载与 `is_true` 开关过滤。
+*   **无感鉴权与全局上下文**：基于 Pytest 的 `Session` 级 Fixture 实现自动登录取 Token，并利用 `global_context` 字典实现跨用例的数据提取与安全流转，彻底消除用例间的强耦合。
+*   **安全的变量替换**：基于正则表达式实现 `${变量名}` 替换，精准识别完全匹配（保留 `int` 等原始类型）与拼接匹配（强转 `str`），并内置防御性断言，变量缺失时直接抛出异常（Fail Fast）。
+*   **真实文件流防假校验**：底层强制 `open(rb)` 读取文件流，彻底杜绝“纯字符串传参”导致的 0 字节假通过。并在请求发送中利用 `try...finally` 强制释放文件句柄，防止高并发下的资源泄漏。
+*   **双重断言机制**：支持基于 `JSONPath` 的 HTTP 响应断言，以及基于 `DictCursor` 的 JDBC 数据库 SQL 断言（支持单字段与多字段字典精准校验）。
+*   **全生命周期数据治理**：采用 `auto_test_` 前缀规范，利用 Fixture 的 `yield` 机制，在测试前后自动执行 `DELETE` 清理脚本，保证测试环境持久纯净。
+*   **精美的可视化报告**：深度集成 Allure，支持动态层级分类、日志脱敏附件与 Token 遮蔽展示。
 
-首先利用Python把HTTP接口封装成Python接口，接着把这些Python接口组装成一个个的关键字，再把关键字组装成测试用例，而测试数据则通过YAML文件进行统一管理，然后再通过Pytest测试执行器来运行这些脚本，并结合Allure输出测试报告。
+## 📂 目录结构
 
-当然，如果感兴趣的话，还可以再对接口自动化进行Jenkins持续集成。
-
-## 项目部署
-
-首先，下载项目源码后，在根目录下找到 ```requirements.txt``` 文件，然后通过 pip 工具安装 requirements.txt 依赖，执行命令：
-
+```text
+├── config/             # 环境配置 (BASE_URL, 数据库配置等)
+├── data/               # YAML 测试用例数据 (多文件模块化)
+├── file/               # 测试文件上传目录
+├── testcases/          # 测试执行入口 (test_runner.py)
+├── utils/              # 核心工具类
+│   ├── analyse_case.py # 请求解析与变量安全替换
+│   ├── asserts.py      # HTTP与数据库双重断言
+│   ├── db.py           # 数据库连接与执行工具
+│   ├── send_request.py # HTTP 请求发送与资源释放
+│   └── yaml_utils.py   # YAML 数据加载与过滤
+├── conftest.py         # Pytest 全局夹具 (Session 级鉴权与数据清理)
+├── pytest.ini          # Pytest 配置
+└── requirements.txt    # 依赖库
 ```
-pip3 install -r requirements.txt
-```
 
-接着，修改 ```config/config.py``` 配置文件，在Windows环境下，安装相应依赖之后，在命令行窗口执行命令：
+# ****🚀 快速开始****
 
-```
-pytest
-```
+安装依赖：pip install -r requirements.txt
 
-## 项目结构
+配置环境：修改 config/config.py 中的 BASE_URL、登录账号密码及数据库连接信息。
 
+执行测试：在终端运行 pytest
 
-conftest.py 可以存放夹具，用于测试用例执行前后的数据初始化和销毁
-- data ====>> 用于保存 excel/yaml 格式的测试用例
-- testcases ====>> 测试用例
-- utils ====>> 用于保存各种工具类/函数，例如读取excel/yaml 文件用到的工具函数
-- config ====>> 用于保存一些配置信息，例如BASE_URL，数据库配置信息等
-- file ====>> 涉及文件上传类接口时，可以用于保存需要上传的文件
-- log ====>> 用于保存日志
-- report ====>> 用于生成allure测试报告
-- pytest.ini ====>> pytest配置文件
-- requirements.txt ====>> 相关依赖包文件
-- run.py ====>> 运行入口
+生成报告：运行 allure serve ./allure-results
 
-## 关键字封装说明
+# **📸 测试报告效果展示**
 
+## **1. 测试套件与用例执行概览**
 
-## 测试报告效果展示
+![img_1.png](img_1.png)
 
+## **2. 详细步骤与断言日志追踪**
 
+![img_2.png](img_2.png)
 
-![img_1.png](img_1.png)![img_2.png](img_2.png)
+# **🎯 关键技术实战说明**
+
+##  **1. 接口依赖与上下文传递**
+
+在 YAML 中通过 jsonExData 提取上游接口返回值（如 user_id），存入 global_context；下游接口直接通过 ${user_id} 引用。底层结合 Pytest Fixture 与字典的引用传递，完美解决接口依赖，同时支持单条用例独立调试。
+
+## **2. 测试数据与脏数据清理**
+
+框架层维护了 cleanup.yaml 文件。在 conftest.py 的 global_context Fixture 中，利用 yield 语法在测试会话开始前和结束后，自动遍历执行清理 SQL（结合 LIKE 'auto_test_%' 前缀）。无需测试人员在每条用例里手动写 DELETE，实现了对测试人员零心智负担的环境治理。
+
+## **3. 文件上传与内存泄漏防范**
+
+针对表单文件上传（multipart/form-data），框架在 analyse_case 中以 rb 模式打开文件流，并在请求发送的 finally 块中遍历关闭文件句柄，彻底杜绝了句柄泄漏，保障了自动化框架在长时间运行时的稳定性。

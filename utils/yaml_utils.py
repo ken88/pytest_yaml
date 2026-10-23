@@ -21,7 +21,7 @@ def read_yaml():
             case_list = yaml.safe_load(f)
 
             # 4. 过滤 is_true 并合并到总列表
-            if case_list:
+            if case_list and isinstance(case_list, list):
                 for dict_data in case_list:
                     if dict_data.get("is_true", True):
                         all_cases.append(dict_data)

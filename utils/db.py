@@ -32,11 +32,12 @@ def query_one(sql, args=None):
 def query_all(sql, args=None):
     conn = get_db_conn()
     cursor = conn.cursor(DictCursor)
-    cursor.execute(sql, args or [])
-    res = cursor.fetchall()
-    cursor.close()
-    conn.close()
-    return res
+    try:
+        cursor.execute(sql, args or [])
+        return cursor.fetchall()
+    finally:
+        cursor.close()
+        conn.close()
 
 # 执行增删改（insert/update/delete）
 def execute_sql(sql, args=None):

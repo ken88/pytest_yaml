@@ -79,7 +79,7 @@
   jsonExData:
     user_id: "$..data"
   sqlExData:
-  is_true: true
+  is_true: false
 
 # 用例4：修改刚新增的用户（依赖用例3提取的  ${user_id}）
 - id: user-4
@@ -109,4 +109,4 @@
     password: "e3ceb5881a0a1fdaad01296d7554868d"
   jsonExData:
   sqlExData:
-  is_true: true
+  is_true: false

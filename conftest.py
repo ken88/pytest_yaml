@@ -1,4 +1,5 @@
 import logging
+import subprocess
 
 import pytest
 import requests
@@ -6,6 +7,25 @@ import requests
 from config.config import BASE_URL,USERNAME,PASSWORD
 from utils.db_cleaner import run_cleanup
 
+def pytest_sessionfinish(session, exitstatus):
+    """
+    全局钩子：整个测试会话结束后，自动生成 Allure HTML 报告
+    """
+    print("\n" + "=" * 50)
+    print("🚀 测试执行完毕，开始生成 Allure HTML 可视化报告...")
+
+    # 命令：根据你 pytest.ini 里的路径来生成
+    cmd = "allure generate ./report/json_report -o ./report/html_report --clean --language zh"
+
+    try:
+        # 使用 shell=True 兼容各种环境（包括你刚才遇到的 Mac 环境变量问题）
+        subprocess.run(cmd, shell=True, check=True)
+        print("✅ 报告生成成功！")
+        print("👉 你可以手动输入以下命令直接在浏览器中查看报告：")
+        print("   allure open ./report/html_report")
+    except subprocess.CalledProcessError as e:
+        print(f"❌ 报告生成失败，错误信息: {e}")
+    print("=" * 50 + "\n")
 
 @pytest.fixture(scope="session", autouse=True)
 def global_context():
@@ -22,13 +42,11 @@ def global_context():
     login_url = f"{BASE_URL}/login"
     payload = {"username": USERNAME, "password": PASSWORD}
 
-    res = requests.post(login_url, json=payload)
-
     try:
         res = requests.post(login_url, json=payload)
         if res.status_code == 200 and res.json().get("code") == 1:
             context["TOKEN"] =  res.json().get("data", {}).get("token")
-            logging.info(f"前置登录成功，Token 已注入: {context['TOKEN'][:10]}...")
+            logging.info(f"前置登录成功，Token 已注入: {str(context['TOKEN'])[:10]}...")
         else:
             # 如果业务返回失败，调用 pytest.skip
             pytest.skip(f"【全局跳过】前置登录业务失败，返回: {res.text}")
@@ -36,15 +54,6 @@ def global_context():
         # 如果网络异常等，也调用 pytest.skip
         pytest.skip(f"【全局跳过】前置登录发生异常: {e}")
 
-
-    #  提取 Token 并存入上下文
-    if res.status_code == 200 and res.json().get("code") == 1:
-        token = res.json().get("data", {}).get("token")
-        context["TOKEN"] = token  # 存起来
-
-    else:
-        # 如果业务返回失败，调用 pytest.skip
-        pytest.skip(f"【全局跳过】前置登录业务失败，返回: {res.text}")
     #  使用 yield 把字典交出去
     yield context
 
