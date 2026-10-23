@@ -6,7 +6,7 @@ from config.config import USER, HOST, PORT, PASSWORD, DATABASE,CHARSET
 
 def get_db_conn():
 
-    # 数据库信息，改成你本地的
+    # 数据库信息
     conn = pymysql.connect(
         host = HOST,
         port = PORT,
@@ -18,15 +18,15 @@ def get_db_conn():
     return conn
 
 # 查询单条（用来校验新增/编辑后的数据）
-def query_one(sql, args=None,index=0):
+def query_one(sql, args=None):
     conn = get_db_conn()
-    cursor = conn.cursor()
-    # cursor = conn.cursor(DictCursor) # 返回字典，方便直接取字段
-    cursor.execute(sql, args or [])
-    res = cursor.fetchone()
-    cursor.close()
-    conn.close()
-    return res[index]
+    cursor = conn.cursor(DictCursor) # 返回字典，方便直接取字段
+    try:
+        cursor.execute(sql, args or [])
+        return cursor.fetchone()
+    finally:
+        cursor.close()
+        conn.close()
 
 # 查询多条
 def query_all(sql, args=None):
@@ -43,7 +43,10 @@ def execute_sql(sql, args=None):
     conn = get_db_conn()
     cursor = conn.cursor()
     try:
-        cursor.execute(sql, args or [])
+        if args:
+            cursor.execute(sql, args)
+        else:
+            cursor.execute(sql)
         conn.commit() # 提交事务
         return cursor.rowcount # 返回影响行数
     except Exception as e:

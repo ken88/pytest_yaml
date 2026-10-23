@@ -1,0 +1,56 @@
+# 用例1：新增带图片上传用户（files 走 form-data 表单）
+- id: user_file_1
+  feature: 用户管理
+  story: 新增带图片成功
+  title: 新增带图片上传用户，添加成功
+  method: post
+  path: /api/user/addSaveImg
+  headers:
+    Authorization: "${TOKEN}"
+  params:
+  data:
+    username: "auto_test_测试数据3"
+    password: "123456"
+  json:
+  files:
+    img_file: ./file/test.jpg
+  check:
+    code: "$..code"
+    msg: "$..msg"
+  expected:
+    code: 1
+    msg: "操作成功"
+  sql_check:
+  sql_expected:
+  jsonExData:
+    user_id: "$..data"
+  sqlExData:
+  is_true: false
+
+# 用例2:修改用例1刚新增的用户（依赖用例1提取的  ${user_id}）
+- id: user_file_2
+  feature: 用户管理
+  story: 修改带图片成功
+  title: 修改刚增加的用户，修改成功
+  method: post
+  path: /api/user/editSave
+  headers:
+    Authorization: "${TOKEN}"
+  params:
+  data:
+  json:
+    id: ${user_id}
+    username: "auto_test_测试数据4"
+    password: "222222"
+  files:
+  check:
+    code: "$..code"
+    msg: "$..msg"
+  expected:
+    code: 1
+    msg: "操作成功"
+  sql_check:
+  sql_expected:
+  jsonExData:
+  sqlExData:
+  is_true: false

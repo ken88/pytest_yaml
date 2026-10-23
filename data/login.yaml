@@ -1,0 +1,33 @@
+# ============================================================
+# 接口测试用例
+# 运行流程：读取 YAML 文件 → 解析字典 → 变量替换（替换 ${变量名}） → 逐条执行
+# 变量说明：使用 ${TOKEN}、${user_id} 等占位符，在执行时由全局上下文（global_context）动态替换
+# 文件参数：files 中的 img_file 只需填写文件路径，框架发送请求时会自动读取并以 form-data 格式上传
+# 执行开关：is_true 为 true 时执行当前用例；为 false 时自动跳过（skip）
+# ============================================================
+
+# 用例1：登录成功，提取 TOKEN 存入上下文
+- id: login-1
+  feature: 登录
+  story: 登录成功
+  title: 管理员登录成功
+  method: post
+  path: /login
+  headers:
+  params:
+  data:
+  json:
+    username: "wangwu"
+    password: "123456"
+  files:
+  check:
+    code: "$..code"
+    msg: "$..msg"
+  expected:
+    code: 1
+    msg: "操作成功"
+  sql_check:
+  sql_expected:
+  jsonExData:
+  sqlExData:
+  is_true: true

@@ -1,0 +1,5 @@
+# 统一清理清单
+cleanup_sql:
+  - "delete from user where username like '测试%'"
+  - "delete from user where username like 'auto_test_%'"
+  - "delete from admin where username like '测试%'"

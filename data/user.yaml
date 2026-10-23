@@ -1,0 +1,112 @@
+# 用例1：未登录状态，查询列表失败（不携带token）
+- id: user-1
+  feature: 用户管理
+  story: 查询失败
+  title: 为登录状态，查询列表失败
+  method: post
+  path: /api/user/getList
+  headers:
+  params:
+  data:
+  json:
+    page: 1
+    pageSize: 2
+  files:
+  check:
+    code: "$..code"
+    msg: "$..msg"
+  expected:
+    code: 401
+    msg: "未携带token，请先登录"
+  sql_check:
+  sql_expected:
+  jsonExData:
+  sqlExData:
+  is_true: true
+
+# 用例2：登录后查询用户列表成功（自动带上 ${TOKEN}）
+- id: user-2
+  feature: 用户管理
+  story: 查询成功
+  title: 查询用户数据列表成功
+  method: post
+  path: /api/user/getList
+  headers:
+    Authorization: "${TOKEN}"
+  params:
+  data:
+  json:
+    page: 1
+    pageSize: 2
+  files:
+  check:
+    code: "$..code"
+    msg: "$..msg"
+  expected:
+    code: 1
+    msg: "操作成功"
+  sql_check:
+  sql_expected:
+  jsonExData:
+  sqlExData:
+  is_true: true
+
+# 用例3：新增用户成功，提取 user_id 存入上下文（用例4会用到）
+- id: user-3
+  feature: 用户管理
+  story: 新增成功
+  title: 添加一个用户，添加成功
+  method: post
+  path: /api/user/addSave
+  headers:
+    Authorization: "${TOKEN}"
+  params:
+  data:
+  json:
+    username: "auto_test_测试数据"
+    password: "123456"
+  files:
+  check:
+    code: "$..code"
+    msg: "$..msg"
+  expected:
+    code: 1
+    msg: "操作成功"
+  sql_check: "select username,password from user where username = 'auto_test_测试数据'"
+  sql_expected:
+    username: "auto_test_测试数据"
+    password: "e10adc3949ba59abbe56e057f20f883e"
+  jsonExData:
+    user_id: "$..data"
+  sqlExData:
+  is_true: true
+
+# 用例4：修改刚新增的用户（依赖用例3提取的  ${user_id}）
+- id: user-4
+  feature: 用户管理
+  story: 修改成功
+  title: 修改刚增加的用户，修改成功
+  method: post
+  path: /api/user/editSave
+  headers:
+    Authorization: "${TOKEN}"
+  params:
+  data:
+  json:
+    id: ${user_id}
+    username: "auto_test_测试数据1"
+    password: "222222"
+  files:
+  check:
+    code: "$..code"
+    msg: "$..msg"
+  expected:
+    code: 1
+    msg: "操作成功"
+  sql_check: "select username,password from user where id = ${user_id}"
+  sql_expected:
+    username: "auto_test_测试数据1"
+    password: "e3ceb5881a0a1fdaad01296d7554868d"
+  jsonExData:
+  sqlExData:
+  is_true: true

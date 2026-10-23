@@ -1,5 +1,3 @@
-from pathlib import Path
-
 import openpyxl
 
 from config.config import EXCEL_FILE, SHETTL_NAME
@@ -33,7 +31,7 @@ def read_excel():
     return data
 
 def str_to_obj(value):
-    """字符串转对象，如果不是字符串返回None"""
+    # 字符串转对象，如果不是字符串返回None
     if isinstance(value, str):
         # 优先json.loads，更安全；如果需要兼容python字典写法再用eval
         # return json.loads(value)
